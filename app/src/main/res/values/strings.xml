@@ -2,7 +2,7 @@
     <string name="app_name">TicTacToe</string>
     <string name="player_0">Player: 0</string>
     <string name="computer_0">Computer: 0</string>
-    <string name="reset">Reset</string>
+    <string name="reset">Reset Play Board</string>
     <string name="player">Player:</string>
     <string name="Computer">Computer:</string>
 </resources>
