@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/player_id"
             android:text="@string/reset"
+            android:id="@+id/reset_button_id"
             android:layout_toEndOf="@id/player_id" />
 
 
@@ -42,7 +43,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_00"
+            android:text=""
             tools:ignore="ButtonStyle,NestedWeights" />
 
         <Button
@@ -50,7 +53,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_01"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -59,6 +64,7 @@
             android:layout_height="match_parent"
             android:textSize="30sp"
             android:id="@+id/button_02"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
@@ -72,7 +78,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_10"
+            android:text=""
             tools:ignore="ButtonStyle,NestedWeights" />
 
         <Button
@@ -80,7 +88,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_11"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -88,7 +98,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_12"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
@@ -102,7 +114,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_20"
+            android:text=""
             tools:ignore="ButtonStyle,NestedWeights" />
 
         <Button
@@ -110,7 +124,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_21"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -118,7 +134,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textSize="30sp"
+            android:freezesText="true"
             android:id="@+id/button_22"
+            android:text=""
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>
