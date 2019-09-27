@@ -4,24 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
-
     private val boardButtonsArray = Array<Array<Button?>>(3) {
         arrayOfNulls(3)
     }
-    private lateinit var playerPointsTextView: TextView
     private var dynamicallyAssignedButtonId: String? = null
-    private lateinit var computerPointsTextView: TextView
-
-    private var playerPoints = 0
-    private var computerPoints = 0
-    private var roundCount = 0
     var humanPlayer = ArrayList<Int>()
     var computerPlayer = ArrayList<Int>()
     private var humanPlayerTurn: Boolean = true
@@ -31,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        playerPointsTextView = player_id
-        computerPointsTextView = computer_id
         for (m in 0..2) {
             for (n in 0..2) {
                 dynamicallyAssignedButtonId = "button_$m$n"
@@ -46,16 +36,12 @@ class MainActivity : AppCompatActivity() {
         }
         val resetButton = reset_button_id
         resetButton.setOnClickListener {
-            onRestButtonClick()
+            onResetButtonClick()
         }
     }
 
-    private fun onRestButtonClick() {
-        playerPoints = 0
-        computerPoints = 0
-//        updatePointText()
+    private fun onResetButtonClick() {
         resetPlayerBoard()
-
     }
 
     private fun onButtonClick(view: View) {
@@ -72,41 +58,41 @@ class MainActivity : AppCompatActivity() {
             R.id.button_21->selectedCellId = 8
             R.id.button_22->selectedCellId = 9
         }
-        playGame(selectedCellId, clickedButton)
+        playGameByHuman(selectedCellId, clickedButton)
     }
 
-    private fun playGame(selectedCellId: Int, clickedButton: Button) {
-        if (humanPlayerTurn) {
-            clickedButton.text = "X"
-            clickedButton.setBackgroundColor(Color.BLUE)
-            humanPlayer.add(selectedCellId)
-            humanPlayerTurn = false
-            playGameByComputer()
-        }else {
-            clickedButton.text = "O"
-            clickedButton.setBackgroundColor(Color.YELLOW)
-            computerPlayer.add(selectedCellId)
-            humanPlayerTurn = true
-
-        }
-        clickedButton.isEnabled = false
-
-        determineWinner()
-    }
-    private fun playGameByComputer() {
-        val unSelectedCells = ArrayList<Int>()
-        for (unSelectedCellId in 1..9) {
-            if (!(humanPlayer.contains(unSelectedCellId) || computerPlayer
-                    .contains(unSelectedCellId))) {
-                unSelectedCells.add(unSelectedCellId)
+    private fun playGameByHuman(selectedCellId: Int, clickedButton: Button) {
+        when {
+            humanPlayerTurn -> {
+                clickedButton.text = "X"
+                clickedButton.setBackgroundColor(Color.BLUE)
+                humanPlayer.add(selectedCellId)
+                humanPlayerTurn = false
+                playGameByComputer()
+            }
+            else -> {
+                clickedButton.text = "Y"
+                clickedButton.setBackgroundColor(Color.YELLOW)
+                computerPlayer.add(selectedCellId)
+                humanPlayerTurn = true
 
             }
         }
-        val r = Random()
-        val randomIndex = r.nextInt(unSelectedCells.size-0)+0
-        val unSelectedCellId = unSelectedCells[randomIndex]
-        val selectedButton: Button
-        selectedButton = when(unSelectedCellId) {
+        clickedButton.isEnabled = false
+        determineWinner()
+    }
+    private fun playGameByComputer() {
+        val selectedCell = ArrayList<Int>()
+        for (selectedCellId in 1..9) {
+            when {
+                !(humanPlayer.contains(selectedCellId) || computerPlayer
+                    .contains(selectedCellId)) -> selectedCell.add(selectedCellId)
+            }
+        }
+        val randomInstance = Random()
+        val randomIndex = randomInstance.nextInt(selectedCell.size-0)+0
+        selectedCellId = selectedCell[randomIndex]
+        clickedButton = when(selectedCellId) {
             1-> button_00
             2-> button_01
             3-> button_02
@@ -118,121 +104,115 @@ class MainActivity : AppCompatActivity() {
             9-> button_22
             else-> button_00
         }
-        playGame(unSelectedCellId, selectedButton)
-
-
+        playGameByHuman(selectedCellId, clickedButton)
+        clickedButton.isEnabled = false
     }
+
     private fun determineWinner() {
         var gameWinner = -1
-        // Performing Horizontal Check/ Rows
-        if (humanPlayer.contains(1) && humanPlayer.contains(2) && humanPlayer.contains(3)) {
-            gameWinner = 1
+        when {
+            humanPlayer.contains(1) && humanPlayer.contains(2) && humanPlayer.contains(3) ->
+                gameWinner = 1
         }
-        if (computerPlayer.contains(1) && computerPlayer.contains(2) && computerPlayer.contains(3)) {
-            gameWinner = 2
+        when {
+            computerPlayer.contains(1) && computerPlayer.contains(2) && computerPlayer
+                .contains(3) -> gameWinner = 2
         }
-        if (humanPlayer.contains(4) && humanPlayer.contains(5) && humanPlayer.contains(6)) {
-            gameWinner = 1
+        when {
+            humanPlayer.contains(4) && humanPlayer.contains(5) && humanPlayer.contains(6) ->
+                gameWinner = 1
         }
-        if (computerPlayer.contains(4) && computerPlayer.contains(5) && computerPlayer.contains(6)) {
-            gameWinner = 2
+        when {
+            computerPlayer.contains(4) && computerPlayer.contains(5) && computerPlayer
+                .contains(6) -> gameWinner = 2
         }
-        if (humanPlayer.contains(7) && humanPlayer.contains(7) && humanPlayer.contains(9)) {
-            gameWinner = 1
+        when {
+            humanPlayer.contains(7) && humanPlayer.contains(7) && humanPlayer.contains(9) ->
+                gameWinner = 1
         }
-        if (computerPlayer.contains(7) && computerPlayer.contains(8) && computerPlayer.contains(9)) {
-            gameWinner = 2
-        }
-        // Performing a Vertical Check/Columns
-        if (humanPlayer.contains(1) && humanPlayer.contains(4) && humanPlayer.contains(7)) {
-            gameWinner = 1
-        }
-        if (computerPlayer.contains(1) && computerPlayer.contains(4) && computerPlayer.contains(7)) {
-            gameWinner = 2
-        }
-        if (humanPlayer.contains(2) && humanPlayer.contains(5) && humanPlayer.contains(8)) {
-            gameWinner = 1
-        }
-        if (computerPlayer.contains(2) && computerPlayer.contains(5) && computerPlayer.contains(8)) {
-            gameWinner = 2
-        }
-        if (humanPlayer.contains(3) && humanPlayer.contains(6) && humanPlayer.contains(9)) {
-            gameWinner = 1
-        }
-        if (computerPlayer.contains(3) && computerPlayer.contains(6) && computerPlayer.contains(9)) {
-            gameWinner = 2
-        }
-        // Performing a Diagonal Check
-
-        if (humanPlayer.contains(1) && humanPlayer.contains(5) && humanPlayer.contains(9)) {
-            gameWinner = 1
-        }
-        if (computerPlayer.contains(1) && computerPlayer.contains(5) && computerPlayer.contains(9)) {
-            gameWinner = 2
-        }
-        if (humanPlayer.contains(3) && humanPlayer.contains(5) && humanPlayer.contains(7)) {
-            gameWinner = 1
-        }
-        if (computerPlayer.contains(3) && computerPlayer.contains(5) && computerPlayer.contains(7)) {
-            gameWinner = 2
+        when {
+            computerPlayer.contains(7) && computerPlayer.contains(8) && computerPlayer
+                .contains(9) -> gameWinner = 2
         }
 
-        if(gameWinner != -1) {
-            if (gameWinner == 1) {
-                playerPoints++
-                Toast.makeText(this, "You Have Won and Computer Lost", Toast.LENGTH_SHORT).show()
-                updatePointText()
+        when {
+            humanPlayer.contains(1) && humanPlayer.contains(4) && humanPlayer.contains(7) ->
+                gameWinner = 1
+        }
+        when {
+            computerPlayer.contains(1) && computerPlayer.contains(4) && computerPlayer
+                .contains(7) -> gameWinner = 2
+        }
+        when {
+            humanPlayer.contains(2) && humanPlayer.contains(5) && humanPlayer.contains(8) ->
+                gameWinner = 1
+        }
+        when {
+            computerPlayer.contains(2) && computerPlayer.contains(5) && computerPlayer
+                .contains(8) -> gameWinner = 2
+        }
+        when {
+            humanPlayer.contains(3) && humanPlayer.contains(6) && humanPlayer.contains(9) ->
+                gameWinner = 1
+        }
+        when {
+            computerPlayer.contains(3) && computerPlayer.contains(6) && computerPlayer
+                .contains(9) -> gameWinner = 2
+        }
 
+        when {
+            humanPlayer.contains(1) && humanPlayer.contains(5) && humanPlayer.contains(9) ->
+                gameWinner = 1
+        }
+        when {
+            computerPlayer.contains(1) && computerPlayer.contains(5) && computerPlayer
+                .contains(9) -> gameWinner = 2
+        }
+        when {
+            humanPlayer.contains(3) && humanPlayer.contains(5) && humanPlayer.contains(7) ->
+                gameWinner = 1
+        }
+        when {
+            computerPlayer.contains(3) && computerPlayer.contains(5) && computerPlayer
+                .contains(7) -> gameWinner = 2
+        }
 
-            }else {
-                computerPoints++
-                Toast.makeText(this, "You Lost and Computer Won", Toast.LENGTH_SHORT).show()
-                updatePointText()
-
-            }
+        when {
+            gameWinner != -1 -> when (gameWinner) {
+                1 -> {
+                    Toast.makeText(
+                        this, "You Have Won, Congratulations",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    Toast.makeText(this, "You Lost",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }else -> {
+            Toast.makeText(this, "No Winner, Continue Playing", Toast.LENGTH_SHORT).show()
+        }
         }
     }
-
-    private fun goneDraw() {
-        Toast.makeText(this, "YOU WENT DRAW", Toast.LENGTH_SHORT).show()
-        resetPlayerBoard()
-    }
-
-//    private fun computerWon() {
-//        computerPoints++
-//        Toast.makeText(this, "COMPUTER WON!", Toast.LENGTH_SHORT).show()
-//        updatePointText()
-//        resetPlayerBoard()
-//    }
 
     private fun resetPlayerBoard() {
         for (m in 0..2) {
             for (n in 0..2) {
                 boardButtonsArray[m][n]?.text = ""
+                boardButtonsArray[m][n]?.isEnabled = true
+                boardButtonsArray[m][n]?.setBackgroundColor(Color.LTGRAY)
             }
         }
-        roundCount = 0
         humanPlayerTurn = true
-    }
-
-    private fun updatePointText() {
-        playerPointsTextView.text = "${getString(R.string.player)}$playerPoints"
-        computerPointsTextView.text = "${getString(R.string.Computer)}$computerPoints"
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState!!.putInt("playerPoints", playerPoints)
-        outState.putInt("computerPoints", computerPoints)
-        outState.putInt("roundCount", roundCount)
-        outState.putBoolean("humanPlayerTurn", humanPlayerTurn)
+        outState!!.putBoolean("humanPlayerTurn", humanPlayerTurn)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        playerPoints = savedInstanceState!!.getInt("playerPoints")
-        computerPoints = savedInstanceState.getInt("computerPoints")
-        roundCount = savedInstanceState.getInt("roundCount")
-        humanPlayerTurn= savedInstanceState.getBoolean("humanPlayerTurn")
+        humanPlayerTurn= savedInstanceState!!.getBoolean("humanPlayerTurn")
     }
 }
