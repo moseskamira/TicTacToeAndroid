@@ -63,15 +63,15 @@ class MainActivity : AppCompatActivity() {
     private fun playGameByHuman(selectedCellId: Int, clickedButton: Button) {
         when {
             humanPlayerTurn -> {
-                clickedButton.text = "X"
-                clickedButton.setBackgroundColor(Color.BLUE)
+                clickedButton.text = "P"
+                clickedButton.setBackgroundColor(Color.parseColor("#009688"))
                 determineWinnerInstance.humanPlayer.add(selectedCellId)
                 humanPlayerTurn = false
                 playGameByComputer()
             }
             else -> {
-                clickedButton.text = "Y"
-                clickedButton.setBackgroundColor(Color.YELLOW)
+                clickedButton.text = "C"
+                clickedButton.setBackgroundColor(Color.parseColor("#03A9F4"))
                 determineWinnerInstance.computerPlayer.add(selectedCellId)
                 humanPlayerTurn = true
             }
@@ -84,7 +84,8 @@ class MainActivity : AppCompatActivity() {
         val selectedCell = ArrayList<Int>()
         for (selectedCellId in 1..9) {
             when {
-                !(determineWinnerInstance.humanPlayer.contains(selectedCellId) || determineWinnerInstance.computerPlayer
+                !(determineWinnerInstance.humanPlayer.contains(selectedCellId) ||
+                        determineWinnerInstance.computerPlayer
                     .contains(selectedCellId)) -> selectedCell.add(selectedCellId)
             }
         }
@@ -112,7 +113,6 @@ class MainActivity : AppCompatActivity() {
             for (n in 0..2) {
                 boardButtonsArray[m][n]?.text = ""
                 boardButtonsArray[m][n]?.isEnabled = true
-                boardButtonsArray[m][n]?.setBackgroundColor(Color.LTGRAY)
             }
         }
         humanPlayerTurn = true

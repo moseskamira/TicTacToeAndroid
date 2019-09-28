@@ -101,8 +101,5 @@ class DetermineWinner(private val context: Context) {
             computerPlayer.contains(3) && computerPlayer.contains(5) && computerPlayer
                 .contains(7) -> gameWinner = 2
         }
-
     }
-
-
 }
