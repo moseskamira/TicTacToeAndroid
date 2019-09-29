@@ -1,105 +1,45 @@
 package com.example.tictactoe
 
-import android.content.Context
-import android.widget.Toast
 
-class DetermineWinner(private val context: Context) {
-    var humanPlayer = ArrayList<Int>()
-    var computerPlayer = ArrayList<Int>()
-    private var gameWinner = -1
+class DetermineWinner {
+    var gameWinner = -1
 
-    fun determineWinner() {
-        evaluateHorizontalWin()
-        evaluateVerticalWin()
-        evaluateDiagonalWin()
-        when (gameWinner) {
-            1 -> {
-                Toast.makeText(
-                    context, "You Have Won, Congratulations",
-                    Toast.LENGTH_SHORT
-                ).show()
+    fun evaluateHorizontalWin(p: ArrayList<Int>, c: ArrayList<Int>) {
+        val list1 = listOf(1, 2, 3)
+        val list2 = listOf(4 ,5 ,6)
+        val list3 = listOf(7 ,8 ,9)
+        when {
+            checkListContainsValues(p, list1, list2, list3) -> gameWinner = 1
+            checkListContainsValues(c, list1, list2, list3) -> gameWinner = 2
+        }
+    }
+
+    fun evaluateVerticalWin(p: ArrayList<Int>, c: ArrayList<Int>) {
+        val list1 = listOf(1, 4, 7)
+        val list2 = listOf(2 ,5 ,8)
+        val list3 = listOf(3 ,6 ,9)
+        when {
+            checkListContainsValues(p, list1, list2, list3) -> gameWinner = 1
+            checkListContainsValues(c, list1, list2, list3) -> gameWinner = 2
+        }
+    }
+
+    fun evaluateDiagonalWin(p: ArrayList<Int>, c: ArrayList<Int>) {
+        val list1 = listOf(1, 5, 9)
+        val list2 = listOf(3 ,5 ,7)
+        when {
+            checkListContainsValues(p, list1, list2) -> gameWinner = 1
+            checkListContainsValues(c, list1, list2) -> gameWinner = 2
+        }
+    }
+
+    private fun checkListContainsValues(optionsList: ArrayList<Int>, vararg winningNumbers:
+    List<Int>): Boolean {
+        winningNumbers.forEach { action ->
+            when {
+                optionsList.containsAll(action) -> return true
             }
-            2 -> {
-                Toast.makeText(context, "You Lost",
-                    Toast.LENGTH_SHORT).show()
-            }else -> {
-            Toast.makeText(context, "No Winner, Continue Playing", Toast.LENGTH_SHORT).show()
         }
-        }
-    }
-
-    private fun evaluateHorizontalWin() {
-        when {
-            humanPlayer.contains(1) && humanPlayer.contains(2) && humanPlayer.contains(3) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(1) && computerPlayer.contains(2) && computerPlayer
-                .contains(3) -> gameWinner = 2
-        }
-        when {
-            humanPlayer.contains(4) && humanPlayer.contains(5) && humanPlayer.contains(6) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(4) && computerPlayer.contains(5) && computerPlayer
-                .contains(6) -> gameWinner = 2
-        }
-        when {
-            humanPlayer.contains(7) && humanPlayer.contains(8) && humanPlayer.contains(9) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(7) && computerPlayer.contains(8) && computerPlayer
-                .contains(9) -> gameWinner = 2
-        }
-
-    }
-
-    private fun evaluateVerticalWin() {
-        when {
-            humanPlayer.contains(1) && humanPlayer.contains(4) && humanPlayer.contains(7) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(1) && computerPlayer.contains(4) && computerPlayer
-                .contains(7) -> gameWinner = 2
-        }
-        when {
-            humanPlayer.contains(2) && humanPlayer.contains(5) && humanPlayer.contains(8) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(2) && computerPlayer.contains(5) && computerPlayer
-                .contains(8) -> gameWinner = 2
-        }
-        when {
-            humanPlayer.contains(3) && humanPlayer.contains(6) && humanPlayer.contains(9) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(3) && computerPlayer.contains(6) && computerPlayer
-                .contains(9) -> gameWinner = 2
-        }
-
-    }
-
-    private fun evaluateDiagonalWin() {
-        when {
-            humanPlayer.contains(1) && humanPlayer.contains(5) && humanPlayer.contains(9) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(1) && computerPlayer.contains(5) && computerPlayer
-                .contains(9) -> gameWinner = 2
-        }
-        when {
-            humanPlayer.contains(3) && humanPlayer.contains(5) && humanPlayer.contains(7) ->
-                gameWinner = 1
-        }
-        when {
-            computerPlayer.contains(3) && computerPlayer.contains(5) && computerPlayer
-                .contains(7) -> gameWinner = 2
-        }
+        return false
     }
 }
