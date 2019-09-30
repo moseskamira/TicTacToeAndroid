@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -14,10 +15,15 @@ class MainActivity : AppCompatActivity() {
         arrayOfNulls(3)
     }
     private var dynamicallyAssignedButtonId: String? = null
-    private var humanPlayerTurn: Boolean = true
+    private val determineWinner = DetermineWinner()
+    private var clickedButton: Button? = null
     private var selectedCellId = 0
-    private lateinit var clickedButton: Button
-    private val determineWinnerInstance = DetermineWinner(this)
+    private var humanPlayerTurn = true
+    private var computerRandomIndex = 0
+    companion object{
+        var humanPlayer = ArrayList<Int>()
+        var computerPlayer = ArrayList<Int>()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,14 +45,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onResetButtonClick() {
-        resetPlayerBoard()
-    }
-
     private fun onButtonClick(view: View) {
         clickedButton = view as Button
-        selectedCellId = 0
-        when(clickedButton.id) {
+        when(clickedButton?.id) {
             R.id.button_00->selectedCellId = 1
             R.id.button_01->selectedCellId = 2
             R.id.button_02->selectedCellId = 3
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             R.id.button_21->selectedCellId = 8
             R.id.button_22->selectedCellId = 9
         }
-        playGameByHuman(selectedCellId, clickedButton)
+        playGameByHuman(selectedCellId, clickedButton!!)
     }
 
     private fun playGameByHuman(selectedCellId: Int, clickedButton: Button) {
@@ -65,54 +66,77 @@ class MainActivity : AppCompatActivity() {
             humanPlayerTurn -> {
                 clickedButton.text = "P"
                 clickedButton.setBackgroundColor(Color.parseColor("#009688"))
-                determineWinnerInstance.humanPlayer.add(selectedCellId)
+                humanPlayer.add(selectedCellId)
                 humanPlayerTurn = false
                 playGameByComputer()
             }
             else -> {
                 clickedButton.text = "C"
                 clickedButton.setBackgroundColor(Color.parseColor("#03A9F4"))
-                determineWinnerInstance.computerPlayer.add(selectedCellId)
+                computerPlayer.add(selectedCellId)
                 humanPlayerTurn = true
             }
         }
         clickedButton.isEnabled = false
-        determineWinnerInstance.determineWinner()
+        getWinner()
     }
 
     private fun playGameByComputer() {
         val selectedCell = ArrayList<Int>()
         for (selectedCellId in 1..9) {
             when {
-                !(determineWinnerInstance.humanPlayer.contains(selectedCellId) ||
-                        determineWinnerInstance.computerPlayer
-                    .contains(selectedCellId)) -> selectedCell.add(selectedCellId)
+                !(humanPlayer.contains(selectedCellId) ||
+                        computerPlayer
+                            .contains(selectedCellId)) -> selectedCell.add(selectedCellId)
             }
         }
         val randomInstance = Random()
-        val randomIndex = randomInstance.nextInt(selectedCell.size-0)+0
-        selectedCellId = selectedCell[randomIndex]
-        clickedButton = when(selectedCellId) {
-            1-> button_00
-            2-> button_01
-            3-> button_02
-            4-> button_10
-            5-> button_11
-            6-> button_12
-            7-> button_20
-            8-> button_21
-            9-> button_22
-            else-> button_00
+        if (selectedCell.size > 0) {
+            computerRandomIndex = randomInstance.nextInt(selectedCell.size-0)+0
+            selectedCellId = selectedCell[computerRandomIndex]
+            clickedButton = when(selectedCellId) {
+                1-> findViewById(R.id.button_00)
+                2-> findViewById(R.id.button_01)
+                3-> findViewById(R.id.button_02)
+                4-> findViewById(R.id.button_10)
+                5-> findViewById(R.id.button_11)
+                6-> findViewById(R.id.button_12)
+                7-> findViewById(R.id.button_20)
+                8-> findViewById(R.id.button_21)
+                9-> findViewById(R.id.button_22)
+                else-> findViewById(R.id.button_00)
+            }
+            playGameByHuman(selectedCellId, clickedButton!!)
+            clickedButton?.isEnabled = false
         }
-        playGameByHuman(selectedCellId, clickedButton)
-        clickedButton.isEnabled = false
     }
 
-    private fun resetPlayerBoard() {
+    private fun getWinner() {
+        determineWinner.evaluateHorizontalWin(humanPlayer, computerPlayer)
+        determineWinner.evaluateVerticalWin(humanPlayer, computerPlayer)
+        determineWinner.evaluateDiagonalWin(humanPlayer, computerPlayer)
+        when (determineWinner.gameWinner) {
+            1 -> {
+                Toast.makeText(this, "You Have Won, Congratulations",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            2 -> {
+                Toast.makeText(this, "You Lost",
+                    Toast.LENGTH_SHORT).show()
+            }else -> {
+            Toast.makeText(this, "No Winner, Continue Playing", Toast.LENGTH_SHORT)
+                .show()
+        }
+        }
+    }
+
+    private fun onResetButtonClick() {
         for (m in 0..2) {
             for (n in 0..2) {
                 boardButtonsArray[m][n]?.text = ""
                 boardButtonsArray[m][n]?.isEnabled = true
+                boardButtonsArray[m][n]?.setBackgroundColor(Color.LTGRAY)
             }
         }
         humanPlayerTurn = true
